@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Faraday Jami - Consultant, Technical Account Manager</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* =========================================================
+       THEME & BASE
+    ========================================================= */
+    :root {
+      --background:#020617;      /* slate-950 */
+      --surface:#0b1324;         /* deeper surface for contrast */
+      --surface-2:#0f172a;       /* slate-900 */
+      --primary-text:#e2e8f0;    /* slate-200 */
+      --secondary-text:#94a3b8;  /* slate-400 */
+      --border:#1e293b;          /* slate-800 */
+      --grid:#192132;
+      --ink-dim:#cbd5e1;
+
+      /* Accents (live-switched) */
+      --accent:#22d3ee;          /* default: HPC cyan-400 */
+      --accent-ghost:rgba(34,211,238,.18);
+      --accent-2:#8b5cf6;        /* cloud */
+      --accent-3:#f472b6;        /* network */
+
+      --ring:0 0 0 1px rgba(255,255,255,.06), 0 16px 40px rgba(0,0,0,.55);
+      --radius:1.5rem;
+    }
+    /* Cloud theme */
+    .theme-cloud {
+      --accent:#8b5cf6;
+      --accent-ghost:rgba(139,92,246,.18);
+    }
+    /* Network theme */
+    .theme-net {
+      --accent:#f472b6;
+      --accent-ghost:rgba(244,114,182,.18);
+    }
+
+    * { box-sizing:border-box }
+    html,body { height:100% }
+    body {
+      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--primary-text);
+      background:
+        radial-gradient(1000px 600px at -10% -10%, rgba(14,165,233,.07), transparent 50%),
+        radial-gradient(1000px 600px at 110% 0%, rgba(139,92,246,.07), transparent 50%),
+        var(--background);
+      -webkit-font-smoothing:antialiased;
+    }
+
+    /* Subtle grid */
+    body::before {
+      content:"";
+      position:fixed; inset:0; pointer-events:none; z-index:-1;
+      background-image:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+      background-size:22px 22px;
+      opacity:.45;
+      mask-image: radial-gradient(circle at 50% 20%, #000 40%, transparent 70%);
+    }
+
+    /* Noise */
+    body::after {
+      content:"";
+      position:fixed; inset:0; pointer-events:none; z-index:-1;
+      opacity:.06; mix-blend-mode:soft-light;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" opacity="0.55" width="100" height="100"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+      background-size:300px 300px;
+    }
+
+    /* Beam accents */
+    .beam {
+      position:absolute; inset:auto -20% -40% -20%; height:340px;
+      background:
+        radial-gradient(closest-side, var(--accent-ghost), transparent 60%),
+        radial-gradient(closest-side, rgba(139,92,246,.12), transparent 70%);
+      filter:blur(26px); transform:rotate(-3deg);
+      pointer-events:none; z-index:0;
+      animation:beam 16s ease-in-out infinite alternate;
+    }
+    @keyframes beam { to { transform:rotate(3deg) translateY(-10px) } }
+
+    /* Cards */
+    .card{
+      background:linear-gradient(180deg,var(--surface),var(--surface-2));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--ring);
+      transition:transform .35s ease, border-color .3s ease, box-shadow .3s ease, background .3s ease;
+      position:relative; overflow:hidden;
+    }
+    .card::before{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background:radial-gradient(600px 120px at -10% -20%, var(--accent-ghost), transparent 40%);
+      opacity:.6;
+    }
+    .card:hover{ transform:translateY(-6px) }
+    .divider{ border-top:1px solid var(--border) }
+
+    /* Nav */
+    .nav-link { position:relative; color:var(--secondary-text); transition:color .2s }
+    .nav-link:hover { color:var(--primary-text) }
+    .nav-link::after {
+      content:''; position:absolute; width:100%; transform:scaleX(0); height:2px; bottom:-6px; left:0;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
+      transform-origin:right; transition:transform .25s ease;
+    }
+    .nav-link:hover::after{ transform:scaleX(1); transform-origin:left }
+    .nav-link.active{ color:var(--primary-text) }
+    .nav-link.active::after{ transform:scaleX(1) }
+
+    /* Tree */
+    .tree ul { padding-left:20px; position:relative; margin:0 }
+    .tree li { list-style:none; padding-top:10px; position:relative }
+    .tree li::before { content:''; position:absolute; top:0; left:-20px; border-left:1px solid var(--border); width:20px; height:100% }
+    .tree li:last-child::before { height:28px }
+    .tree li::after { content:''; position:absolute; top:28px; left:-20px; border-top:1px solid var(--border); width:20px; height:20px }
+    .tree-item { display:inline-block; padding:4px 12px; border-radius:10px; border:1px solid var(--border); background-color:#091126 }
+    .tree-item-primary { border-color:var(--accent); color:var(--accent) }
+    .tree-item-secondary { border-color:#4f46e5; color:#a5b4fc }
+    .tree-item-tertiary { border-color:#be185d; color:#f9a8d4 }
+
+    /* Logos */
+    .logo-item svg { width:100%; height:auto; max-height:32px; fill:var(--secondary-text); transition:all .3s ease }
+    .logo-item:hover svg { filter:drop-shadow(0 0 5px rgba(255,255,255,.12)) }
+    .logo-item:hover .dell-logo { fill:#0076CE }
+    .logo-item:hover .nvidia-logo { fill:#76B900 }
+    .logo-item:hover .att-logo { fill:#00A8E0 }
+    .logo-item:hover .cogent-logo { fill:#FF6A13 }
+    .logo-item:hover .google-logo { fill:#4285F4 }
+    .logo-item:hover .aws-logo { fill:#FF9900 }
+    .logo-item:hover .azure-logo { fill:#0089D6 }
+    .logo-item:hover .openai-logo { fill:#4A90E2 }
+
+    /* Chips */
+    .chip { display:inline-flex; align-items:center; gap:.45rem; padding:.35rem .65rem; border-radius:999px; border:1px solid var(--border); background:#0b172e; color:var(--secondary-text); font-weight:600; font-size:.8rem }
+    .dot { width:.55rem; height:.55rem; border-radius:999px; display:inline-block }
+    .dot.hpc{ background:#22d3ee } .dot.cloud{ background:#8b5cf6 } .dot.net{ background:#f472b6 }
+
+    /* Framed chart cards */
+    .frame-hpc{ box-shadow: inset 0 0 0 1px #11324a, 0 0 0 1px #11324a }
+    .frame-cloud{ box-shadow: inset 0 0 0 1px #1d1f54, 0 0 0 1px #1d1f54 }
+    .frame-net{ box-shadow: inset 0 0 0 1px #3a1f39, 0 0 0 1px #3a1f39 }
+
+    /* Sticky chips bar (scrollspy) */
+    .quick-nav {
+      position:sticky; top:64px; z-index:30; backdrop-filter:blur(8px);
+      background:linear-gradient(180deg, rgba(2,6,23,.80), rgba(2,6,23,.50));
+      border:1px solid var(--border); border-radius:999px; padding:.4rem .6rem;
+      display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap;
+    }
+    .quick-nav a.active { color:#e2e8f0; border-color:var(--accent) }
+
+    /* Scroll progress bar */
+    #scroll-progress {
+      position:fixed; top:0; left:0; height:3px; width:0%; z-index:50;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
+      box-shadow:0 0 18px var(--accent-ghost);
+    }
+
+    /* Spotlight cursor */
+    .spotlight {
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background:radial-gradient(250px 250px at var(--mx,50%) var(--my,20%), rgba(255,255,255,.06), transparent 60%);
+      transition: background .08s linear;
+    }
+
+    /* Reveal-on-scroll */
+    .reveal { opacity:0; transform:translateY(16px) scale(.98); transition:opacity .6s ease, transform .6s ease }
+    .reveal.in { opacity:1; transform:translateY(0) scale(1) }
+
+    /* Theme toggle pill */
+    .theme-pill {
+      display:flex; gap:.4rem; padding:.35rem; border:1px solid var(--border); border-radius:999px; background:#0b172e;
+    }
+    .theme-btn {
+      padding:.35rem .6rem; border-radius:999px; font-weight:700; font-size:.78rem;
+      color:var(--secondary-text); background:transparent; border:1px solid transparent; cursor:pointer;
+    }
+    .theme-btn.active { color:#e2e8f0; border-color:var(--accent); background:rgba(255,255,255,.02) }
+
+    /* Floating “back to top” */
+    .to-top {
+      position:fixed; right:18px; bottom:18px; z-index:40;
+      background:#0b172e; border:1px solid var(--border); border-radius:999px;
+      padding:.55rem .65rem; display:flex; align-items:center; gap:.4rem;
+      color:var(--secondary-text); box-shadow:var(--ring); opacity:0; transform:translateY(12px); transition:.3s;
+    }
+    .to-top.show { opacity:1; transform:translateY(0) }
+    .to-top:hover { color:#e2e8f0; border-color:var(--accent) }
+
+    /* Print tweaks */
+    @media print{
+      .quick-nav, #scroll-progress, .to-top, .theme-switcher { display:none !important }
+      .card { box-shadow:none !important; border-color:#334155 !important }
+    }
+  </style>
+
+  <style>
+    #fj-cmdp-list li{
+      display:flex; align-items:center; gap:.6rem; padding:.55rem .9rem; cursor:pointer;
+      color:#cbd5e1;
+    }
+    #fj-cmdp-list li .k { margin-left:auto; font-size:.7rem; color:#94a3b8; border:1px solid #334155; padding:.1rem .35rem; border-radius:.35rem }
+    #fj-cmdp-list li:hover{ background:rgba(148,163,184,.08) }
+    #fj-cmdp-list li[aria-selected="true"]{ background:rgba(34,211,238,.14); color:#e2e8f0 }
+  </style>
+</head>
+
+<body class="antialiased">
+  <div id="scroll-progress"></div>
+  <div class="spotlight" id="spotlight"></div>
+
+  <header class="bg-slate-950/70 backdrop-blur-lg sticky top-0 z-40 border-b border-slate-800">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-3">
+          <a href="#hero" class="text-xl font-bold text-slate-100 flex items-center gap-2">
+            <i data-lucide="shield-check" class="text-cyan-400"></i>
+            Faraday Jami
+          </a>
+          <div class="hidden md:flex items-center theme-switcher ml-4">
+            <div class="theme-pill">
+              <button class="theme-btn active" data-theme="hpc" title="HPC theme">HPC</button>
+              <button class="theme-btn" data-theme="cloud" title="Cloud theme">Cloud</button>
+              <button class="theme-btn" data-theme="net" title="Network theme">Net</button>
+            </div>
+          </div>
+        </div>
+        <div class="hidden sm:block">
+          <div class="flex items-center space-x-6">
+            <a href="#about" class="nav-link text-sm font-medium">About</a>
+            <a href="#experience" class="nav-link text-sm font-medium">Experience</a>
+            <a href="#expertise" class="nav-link text-sm font-medium">Expertise</a>
+            <a href="#kpis" class="nav-link text-sm font-medium">KPIs</a>
+            <a href="#approach" class="nav-link text-sm font-medium">My Approach</a>
+          </div>
+        </div>
+        <div class="sm:hidden flex items-center">
+          <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+            <span class="sr-only">Open main menu</span>
+            <i data-lucide="menu" id="menu-icon-open" class="block h-6 w-6"></i>
+            <i data-lucide="x" id="menu-icon-close" class="hidden h-6 w-6"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+    <div class="hidden sm:hidden" id="mobile-menu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <a href="#about" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">About</a>
+        <a href="#experience" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Experience</a>
+        <a href="#expertise" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Expertise</a>
+        <a href="#kpis" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">KPIs</a>
+        <a href="#approach" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">My Approach</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="quick-nav max-w-7xl mx-auto mt-3 px-3">
+    <a href="#expertise" class="chip"><span class="dot hpc"></span>Blueprints</a>
+    <a href="#kpis" class="chip"><span class="dot cloud"></span>KPIs</a>
+    <a href="#approach" class="chip"><span class="dot net"></span>Approach</a>
+    <a href="#sales-experience" class="chip"><span class="dot cloud"></span>Engagement</a>
+  </div>
+
+  <main class="max-w-7xl mx-auto p-4 sm:p-8">
+   <section id="hero" class="py-16 text-center relative overflow-hidden reveal">
+  <div class="beam"></div>
+
+  <svg viewBox="0 0 120 120" class="w-32 h-32 mx-auto mb-6 rounded-full border-4 border-slate-700 shadow-lg shadow-cyan-500/10" role="img" aria-label="Faraday Jami avatar">
+    <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+    <circle cx="60" cy="60" r="56" fill="#0f172a"></circle>
+    <circle cx="60" cy="60" r="56" fill="url(#g)" opacity="0.15"></circle>
+    <text x="50%" y="56%" text-anchor="middle" font-family="Inter, system-ui" font-size="44" font-weight="800" fill="#e2e8f0">FJ</text>
+  </svg>
+
+  <h1 class="text-4xl md:text-5xl font-extrabold text-slate-100 tracking-tight">Consultant, Technical Account Manager</h1>
+  <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-400">A trusted technical advisor dedicated to consulting and architecting client success, ensuring infrastructure stability, and bridging the gap between complex technology and business outcomes.</p>
+
+  <div class="mt-6 flex justify-center gap-3 text-sm">
+    <span class="chip"><span class="dot hpc"></span>HPC #22D3EE</span>
+    <span class="chip"><span class="dot cloud"></span>Cloud #8B5CF6</span>
+    <span class="chip"><span class="dot net"></span>Network #F472B6</span>
+  </div>
+
+  <div class="mt-8 flex justify-center space-x-6">
+    <a href="https://github.com/faradeen-ja" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-cyan-400 transition-colors" aria-label="GitHub"><i data-lucide="github"></i></a>
+    <a href="mailto:faradeen@outlook.com" class="text-slate-400 hover:text-cyan-400 transition-colors" aria-label="Email"><i data-lucide="mail"></i></a>
+  </div>
+
+  <div class="mt-8 text-sm text-slate-500">
+    Press 
+    <kbd class="inline-block px-2 py-1 text-xs font-semibold text-slate-400 bg-slate-900 border border-slate-700 rounded-md">Ctrl</kbd> + 
+    <kbd class="inline-block px-2 py-1 text-xs font-semibold text-slate-400 bg-slate-900 border border-slate-700 rounded-md">K</kbd> 
+    (or <kbd class="inline-block px-2 py-1 text-xs font-semibold text-slate-400 bg-slate-900 border border-slate-700 rounded-md">⌘</kbd> + 
+    <kbd class="inline-block px-2 py-1 text-xs font-semibold text-slate-400 bg-slate-900 border border-slate-700 rounded-md">K</kbd>) 
+    to open the command palette.
+  </div>
+
+</section>
+    
+    <section id="about" class="pb-16 reveal">
+      <div class="card max-w-4xl mx-auto p-6 md:p-8 text-center">
+        <div class="flex justify-center items-center gap-3 text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl mb-4">
+          <i data-lucide="user-round" class="w-10 h-10 text-cyan-400"></i>
+          <h2>My Story</h2>
+        </div>
+        <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-400">
+          My journey with technology started with a simple goal: to understand how things work. It began with repairing Dell PCs and grew into a passion for architecting large-scale solutions. I've deployed Dell systems in the mountains for critical government missions and designed the high-speed networks that power today's AI. For me, this isn't just a job; it's the continuation of a lifelong mission to use technology to solve hard problems.
+        </p>
+      </div>
+    </section>
+
+    <section id="experience" class="card p-6 sm:p-8 reveal">
+      <h2 class="text-2xl font-bold text-slate-100 mb-8 text-center">Career Journey</h2>
+      <div class="relative border-l-2 border-slate-800 ml-5 sm:ml-6">
+        <div class="mb-10 ml-8 sm:ml-10">
+          <span class="absolute -left-5 sm:-left-6 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900 border-4 border-slate-950 text-cyan-400"><i data-lucide="hard-hat"></i></span>
+          <h3 class="text-lg font-semibold text-slate-100">Project Manager, U.S. Government Contractor</h3>
+          <p class="text-sm font-medium text-slate-400">2010 - 2014</p>
+          <p class="mt-2 text-sm text-slate-400">Led end-to-end contractual deployments of Dell rugged laptops, servers, and satellites in challenging field environments. Managed SOWs for secure telecom and HPC solutions.</p>
+        </div>
+        <div class="mb-10 ml-8 sm:ml-10">
+          <span class="absolute -left-5 sm:-left-6 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900 border-4 border-slate-950 text-cyan-400"><i data-lucide="briefcase"></i></span>
+          <h3 class="text-lg font-semibold text-slate-100">Manager, Technical Solutions & Account Management</h3>
+          <p class="text-sm font-medium text-slate-400">2015 - 2025 | AT&amp;T</p>
+          <p class="mt-2 text-sm text-slate-400">Acted as lead technical authority, architecting enterprise networking (SD-WAN, 5G) and cloud solutions for Fortune 500 clients and FirstNet initiatives.</p>
+        </div>
+        <div class="mb-10 ml-8 sm:ml-10">
+          <span class="absolute -left-5 sm:-left-6 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900 border-4 border-slate-950 text-cyan-400"><i data-lucide="code-2"></i></span>
+          <h3 class="text-lg font-semibold text-slate-100">Lead Strategic Consultant</h3>
+          <p class="text-sm font-medium text-slate-400">2021 - Present | Worksiox.com</p>
+          <p class="mt-2 text-sm text-slate-400">Founder and technical lead, architecting API-driven automation for Dell server environments and leading full-stack solution deployments.</p>
+        </div>
+        <div class="ml-8 sm:ml-10">
+          <span class="absolute -left-5 sm:-left-6 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900 border-4 border-slate-950 text-cyan-400"><i data-lucide="globe"></i></span>
+          <h3 class="text-lg font-semibold text-slate-100">Technical Account Manager - National</h3>
+          <p class="text-sm font-medium text-slate-400">2025 - Present | Cogent Communications</p>
+          <p class="mt-2 text-sm text-slate-400">Primary technical advisor for Global 2000 clients, ensuring stability of internet-facing infrastructure and consulting on network and datacenter solutions for edge computes, hybrid cloud and AI workloads.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="case-studies" class="mt-8 card p-6 sm:p-8 reveal">
+      <h2 class="text-2xl sm:text-3xl font-bold text-slate-100 text-center mb-8">Selected Case Study</h2>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="md:col-span-7">
+          <div class="flex items-center gap-2 mb-3">
+            <i data-lucide="banknote" class="w-5 h-5 text-cyan-400"></i>
+            <h3 class="text-xl font-semibold">Financial Services — Network Latency Remediation</h3>
+          </div>
+          <p class="text-slate-400">
+            A global financial client experienced sustained latency that degraded trading and analytics workflows.
+            I led the strategy end-to-end, orchestrating discovery across network, compute, and app teams to isolate root causes.
+          </p>
+          <div class="mt-4 grid sm:grid-cols-3 gap-4">
+            <div>
+              <h4 class="text-slate-300 font-semibold text-sm mb-1">Problem</h4>
+              <p class="text-slate-400 text-sm">Legacy, inefficient paths and saturated ports added avoidable hops and queuing delay.</p>
+            </div>
+            <div>
+              <h4 class="text-slate-300 font-semibold text-sm mb-1">Approach</h4>
+              <p class="text-slate-400 text-sm">Mapped flows, baselined latency, and produced a clean reference architecture; drove director-level alignment and a governed change plan.</p>
+            </div>
+            <div>
+              <h4 class="text-slate-300 font-semibold text-sm mb-1">Role</h4>
+              <p class="text-slate-400 text-sm">Strategy lead & technical owner — facilitated teams, authored design, and oversaw cutover.</p>
+            </div>
+          </div>
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-sm text-slate-300 flex items-center gap-2">
+              <i data-lucide="chevron-right" class="w-4 h-4 transition-transform group-open:rotate-90"></i>
+              <span>Read more (architecture deltas & partnerships)</span>
+            </summary>
+            <div class="mt-3 text-sm text-slate-400 space-y-2">
+              <p>Consolidated routes and removed redundant hops; standardized uplinks; right-sized port channels. Partnered with the client and OEMs, applying core <span class="text-cyan-300 font-medium">Dell</span> stacks across transport through application layers to streamline data paths.</p>
+              <p>Delivered an executive-ready deck quantifying latency impact and ROI, aligning stakeholders on the remediation plan.</p>
+            </div>
+          </details>
+        </div>
+        <div class="md:col-span-5">
+          <div class="card p-4">
+            <h4 class="font-semibold mb-3">Outcome</h4>
+            <ul class="space-y-2 text-sm text-slate-300">
+              <li class="flex items-center gap-2"><i data-lucide="timer" class="w-4 h-4 text-cyan-400"></i><strong class="mr-1">15%</strong> end-to-end latency reduction</li>
+              <li class="flex items-center gap-2"><i data-lucide="coins" class="w-4 h-4 text-cyan-400"></i><strong class="mr-1">$200,000</strong> annual savings</li>
+              <li class="flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>Director-level buy-in and cross-team adoption</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="expertise" class="mt-8 card p-6 sm:p-8 reveal">
+      <h2 class="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl text-center mb-12">Technical Blueprints</h2>
+      <div class="space-y-12">
+
+        <div class="flex flex-col lg:flex-row lg:gap-8">
+          <div class="lg:w-1/2 tree">
+            <h3 class="text-xl font-bold text-cyan-400 mb-4">HPC & AI Stack</h3>
+            <ul>
+              <li><span class="tree-item tree-item-primary font-semibold">High-Performance Computing</span>
+                <ul>
+                  <li><span class="tree-item">Compute (The Brains)</span>
+                    <ul>
+                      <li><span class="tree-item">Dell PowerEdge Servers</span></li>
+                      <li><span class="tree-item tree-item-secondary">NVIDIA GPUs (H100)</span></li>
+                    </ul>
+                  </li>
+                  <li><span class="tree-item">Network (The Nervous System)</span></li>
+                  <li><span class="tree-item">Storage (The Fast Library)</span></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div class="lg:w-1/2 mt-6 lg:mt-0">
+            <h3 class="text-xl font-bold text-slate-100 mb-4 text-center lg:text-left">Key Technologies & Partners</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-start p-4 rounded-lg bg-slate-950/50">
+              <div class="logo-item flex flex-col items-center text-center" title="Dell Technologies">
+                <svg class="dell-logo h-10" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="4" fill="none"/><text x="18" y="70" font-family="Inter, sans-serif" font-size="50" font-weight="800" fill="currentColor">D</text><text x="63" y="70" font-family="Inter, sans-serif" font-size="50" font-weight="800" fill="currentColor">LL</text><text x="44" y="70" font-family="Inter, sans-serif" font-size="50" font-weight="800" fill="currentColor" transform="skewX(-15) translate(5, -1)">E</text></svg>
+                <p class="text-xs mt-2 text-slate-500">Dell</p>
+              </div>
+              <div class="logo-item flex flex-col items-center text-center" title="NVIDIA">
+                <svg class="nvidia-logo h-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.64,3.33a8.42,8.42,0,0,0-8.29,7.5,8.28,8.28,0,0,0,5,7.86V13.44a3.33,3.33,0,0,1-2.11-3.11,3.42,3.42,0,0,1,3.42-3.42,3.33,3.33,0,0,1,2.11,3.11v7.58a8.33,8.33,0,0,0,8.29-7.5,8.42,8.42,0,0,0-8.42-8.42Z"/></svg>
+                <p class="text-xs mt-2 text-slate-500">NVIDIA</p>
+              </div>
+              <div class="logo-item flex flex-col items-center text-center" title="OpenAI">
+                <svg class="openai-logo h-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.71 14.29c-.39.39-1.02.39-1.41 0l-3.29-3.29-3.29 3.29c-.39.39-1.02.39-1.41 0-.39-.39-.39-1.02 0-1.41l-3.29-3.29-3.29-3.29c-.39-.39-.39-1.02 0-1.41s1.02-.39 1.41 0l3.29 3.29 3.29-3.29c.39-.39 1.02-.39 1.41 0 .39.39.39 1.02 0 1.41l-3.29 3.29 3.29 3.29c.39.39.39 1.02 0 1.41z"/></svg>
+                <p class="text-xs mt-2 text-slate-500">OpenAI</p>
+              </div>
+              <div class="logo-item flex flex-col items-center text-center" title="Worksiox.com">
+                <svg class="worksiox-logo h-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M3 3h18v18H3V3zm16 2H5v14h14V5zm-2 2v10h-2V7h2zm-4 0v10h-2V7h2zm-4 0v10H7V7h2z"/></svg>
+                <p class="text-xs mt-2 text-slate-500">Worksiox</p>
+              </div>
+            </div>
+
+            <div class="card frame-hpc p-4 mt-6">
+              <h4 class="font-semibold mb-2">HPC Readiness Mix (Illustrative)</h4>
+              <canvas id="hpcMixChart" height="220" aria-label="HPC Readiness Mix"></canvas>
+              <p class="text-xs text-slate-400 mt-2">Balanced emphasis across compute / network / storage.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row lg:gap-8 pt-12 border-t border-slate-800">
+          <div class="lg:w-1/2 tree">
+            <h3 class="text-xl font-bold text-indigo-400 mb-4">Hybrid Cloud Stack</h3>
+            <ul>
+              <li><span class="tree-item tree-item-secondary font-semibold">Hybrid & Multicloud</span>
+                <ul>
+                  <li><span class="tree-item">Public Cloud</span></li>
+                  <li><span class="tree-item">Private Cloud / On-Premise</span>
+                    <ul>
+                      <li><span class="tree-item tree-item-primary">Dell PowerEdge & Storage</span></li>
+                      <li><span class="tree-item">Enterprise Virtualization</span></li>
+                    </ul>
+                  </li>
+                  <li><span class="tree-item tree-item-primary">Dell APEX (The Bridge)</span></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div class="lg:w-1/2 mt-6 lg:mt-0">
+            <h3 class="text-xl font-bold text-slate-100 mb-4 text-center lg:text-left">Key Technologies & Partners</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-start p-4 rounded-lg bg-slate-950/50">
+              <div class="logo-item flex flex-col items-center text-center" title="Google Cloud">
+                <svg class="google-logo h-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                <p class="text-xs mt-2 text-slate-500">Google</p>
+              </div>
+              <div class="logo-item flex flex-col items-center text-center" title="Amazon Web Services">
+                <svg class="aws-logo h-10" viewBox="0 0 68 45" xmlns="http://www.w3.org/2000/svg"><path d="M21.1 34.6c-2.4 2.3-5.2 3.5-8.5 3.5-3.2 0-6.1-1.2-8.4-3.5-2.3-2.3-3.5-5.2-3.5-8.4 0-3.2 1.2-6.1 3.5-8.4 2.3-2.3 5.2-3.5 8.4-3.5 3.2 0 6 .9 8.2 2.8l-2.7 2.7c-1.5-1.2-3.1-1.9-5-1.9-2.2 0-4.1 1-5.6 2.8-1.5 1.8-2.2 4-2.2 6.5s.7 4.7 2.2 6.5c1.5 1.8 3.4 2.8 5.6 2.8 1.9 0 3.5-.6 5-1.9l2.7 2.7zM43.7 14.7c-1.2-1.2-2.8-1.8-4.8-1.8-2.6 0-4.9 1.2-6.6 3.5l12.4 7.2c-.1-1.2-.4-2.4-.9-3.5-1.4-2.6-3.4-3.9-6.1-3.9zm-4.8 16.3c1.8 0 3.3-.6 4.5-1.8l-6.9-4c-1.2 2.2-2.9 3.2-5.1 3.2-1.6 0-3-.5-4.2-1.5l2.7-2.7c.9.6 1.9.9 3 .9 1.9 0 3.5-1 4.8-3l7.3 4.2c-1.5 1.5-3.3 2.2-5.4 2.2-3.1 0-5.8-1.5-7.9-4.4-2.1-2.9-2.6-6.4-1.5-10.3 1.2-4 3.8-6.4 7.9-7.2 3.3-.7 6.3.2 8.8 2.7 2.5 2.5 3.4 5.6 2.7 9.4l-12.8 7.4.4.1zM67.2 26.2c0 3.2-1.2 6.1-3.5 8.4-2.3 2.3-5.2 3.5-8.4 3.5-3.2 0-6-1.2-8.3-3.5-2.3-2.3-3.4-5.2-3.4-8.4 0-3.2 1.1-6.1 3.4-8.4 2.3-2.3 5.1-3.5 8.3-3.5 3.2 0 6.1 1.2 8.4 3.5 2.3 2.3 3.5 5.2 3.5 8.4z"/></svg>
+                <p class="text-xs mt-2 text-slate-500">AWS</p>
+              </div>
+              <div class="logo-item flex flex-col items-center text-center" title="Microsoft Azure">
+                <svg class="azure-logo h-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.45 2.4l-8.9 13.53 3.63 6.67h10.56l3.63-6.67L12.45 2.4zm-1.13 16.9l-4.1-7.47 4.1 1.53v5.94zm.23-7.24l-4.1-3.4h8.2l-4.1 3.4zm1.8 7.24v-5.94l4.1-1.53-4.1 7.47z"/></svg>
+                <p class="text-xs mt-2 text-slate-500">Azure</p>
+              </div>
+            </div>
+
+            <div class="card frame-cloud p-4 mt-6">
+              <h4 class="font-semibold mb-2">Workload Placement (Illustrative)</h4>
+              <canvas id="cloudBlendChart" height="220" aria-label="Hybrid Cloud Blend"></canvas>
+              <p class="text-xs text-slate-400 mt-2">Example split across On-Prem, APEX, and Public Cloud.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row lg:gap-8 pt-12 border-t border-slate-800">
+          <div class="lg:w-1/2 tree">
+            <h3 class="text-xl font-bold text-fuchsia-400 mb-4">Networking (OSI Model)</h3>
+            <ul>
+              <li><span class="tree-item tree-item-tertiary">Layer 7: Application (APIs, HTTP)</span></li>
+              <li><span class="tree-item">Layer 4: Transport (TCP/UDP)</span></li>
+              <li><span class="tree-item">Layer 3: Network (IP, BGP Routing)</span></li>
+              <li><span class="tree-item">Layer 2: Data Link (Ethernet, VPLS)</span></li>
+              <li><span class="tree-item">Layer 1: Physical (Fiber, Copper)</span></li>
+            </ul>
+          </div>
+
+          <div class="lg:w-1/2 mt-6 lg:mt-0">
+            <h3 class="text-xl font-bold text-slate-100 mb-4 text-center lg:text-left">Key Providers & Experience</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-start p-4 rounded-lg bg-slate-950/50">
+              <div class="logo-item flex flex-col items-center text-center" title="AT&T">
+                <svg class="att-logo h-10" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" aria-label="AT&T">
+                  <text x="0" y="30" font-family="Inter, sans-serif" font-size="35" font-weight="800" fill="currentColor">AT&amp;T</text>
+                </svg>
+                <p class="text-xs mt-2 font-bold text-slate-400">AT&amp;T</p>
+              </div>
+              <div class="logo-item flex flex-col items-center text-center" title="Cogent Communications">
+                <svg class="cogent-logo h-10" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" aria-label="Cogent">
+                  <text x="0" y="30" font-family="Inter, sans-serif" font-size="30" font-weight="800" fill="currentColor">COGENT</text>
+                </svg>
+                <p class="text-xs mt-2 font-bold text-slate-400">Cogent</p>
+              </div>
+              <div class="logo-item flex flex-col items-center text-center" title="U.S. Government">
+                <svg class="gov-logo h-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="U.S. Government">
+                  <path d="M12 2.69l5.66 2.06-2.16 5.63-5.66-2.06 2.16-5.63zm-5.66 2.06l5.66 2.06-2.16 5.63-5.66-2.06 2.16-5.63zM12 12.5l-6-2.18v6.37c0 3.44 2.61 6.25 5.8 6.31v-12.5zm6-2.18l-5.8 2.18v12.5c3.19-.06 5.8-2.87 5.8-6.31v-6.37z" fill="currentColor"/>
+                </svg>
+                <p class="text-xs mt-2 text-slate-500">U.S. Gov</p>
+              </div>
+              <div class="logo-item flex flex-col items-center text-center" title="Worksiox">
+                <svg class="worksiox-logo h-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Worksiox">
+                  <path d="M3 3h18v18H3V3zm16 2H5v14h14V5zm-2 2v10h-2V7h2zm-4 0v10h-2V7h2zm-4 0v10H7V7h2z" fill="currentColor"/>
+                </svg>
+                <p class="text-xs mt-2 font-bold text-slate-400">Worksiox</p>
+              </div>
+            </div>
+
+            <div class="card frame-net p-4 mt-6">
+              <h4 class="font-semibold mb-2">Operational Focus by Layer (Illustrative)</h4>
+              <canvas id="osiChart" height="220" aria-label="OSI Operational Focus"></canvas>
+              <p class="text-xs text-slate-400 mt-2">Focus weight across L1–L7 activities.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mt-10 flex flex-wrap gap-2 justify-center">
+        <span class="chip" title="Dell CloudIQ">CloudIQ</span>
+        <span class="chip" title="OpenManage Enterprise">OpenManage</span>
+        <span class="chip" title="Secure Connect Gateway">SCG</span>
+        <span class="chip" title="ProSupport Suite">ProSupport</span>
+        <span class="chip" title="APEX Navigator">APEX Navigator</span>
+        <span class="chip" title="VxRail">VxRail</span>
+      </div>
+    </section>
+
+<!-- KPIs -->
+<section id="kpis" class="mt-8 card p-6 sm:p-8 reveal">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4 text-center">Operational KPIs I Track</h2>
+    <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2">
+        <p class="text-slate-300 text-[15px] leading-7 text-center lg:text-left">
+          <strong>MTTR</strong> • <strong>Change success rate</strong> • <strong>Upgrade compliance</strong> •
+          <strong>CloudIQ coverage</strong> • <strong>APEX utilization</strong> • <strong>Incident volume trend</strong>
+        </p>
+        <div class="mt-4 text-sm text-slate-400">
+          <span class="font-semibold text-slate-300">Governance & Escalation:</span>
+          RACI mapping • change windows • sev-based SLAs • exec comms templates • problem-management postmortems.
+        </div>
+      </div>
+  
+      <!-- Main sparkline -->
+      <div class="card p-4 frame-cloud">
+        <h3 class="font-semibold mb-2">Incident Volume (Illustrative)</h3>
+        <canvas id="kpiSpark" height="120" aria-label="Incident volume trend"></canvas>
+        <p class="text-xs text-slate-400 mt-2">Downward trend reflects proactive TAM operations.</p>
+      </div>
+    </div>
+  
+    <!-- Results by Provider (logos with colored text + aligned hills) -->
+    <div class="max-w-5xl mx-auto mt-6">
+      <h3 class="text-sm font-semibold text-slate-300 mb-3">Results by Provider</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- AT&T -->
+        <div class="card p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="h-5" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" aria-label="AT&T">
+              <text x="0" y="30" font-family="Inter, sans-serif" font-size="35" font-weight="800" fill="#00A8E0">AT&amp;T</text>
+            </svg>
+            <span class="text-[11px] font-semibold" style="color:#00A8E0">AT&amp;T</span>
+          </div>
+          <canvas id="sparkATT" height="70" aria-label="AT&amp;T incidents"></canvas>
+          <p class="text-[11px] text-slate-400 mt-1">MTTR ↓18% • Incidents ↓35%</p>
+        </div>
+  
+        <!-- Cogent -->
+        <div class="card p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="h-5" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" aria-label="Cogent">
+              <text x="0" y="30" font-family="Inter, sans-serif" font-size="30" font-weight="800" fill="#FF6A13">COGENT</text>
+            </svg>
+            <span class="text-[11px] font-semibold" style="color:#FF6A13">Cogent</span>
+          </div>
+          <canvas id="sparkCOGENT" height="70" aria-label="Cogent incidents"></canvas>
+          <p class="text-[11px] text-slate-400 mt-1">MTTR ↓22% • Incidents ↓40%</p>
+        </div>
+  
+        <!-- U.S. Gov -->
+        <div class="card p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="h-5" viewBox="0 0 120 24" xmlns="http://www.w3.org/2000/svg" aria-label="U.S. Gov">
+              <text x="0" y="18" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="#E2E8F0">U.S. GOV</text>
+            </svg>
+            <span class="text-[11px] font-semibold" style="color:#E2E8F0">U.S. Gov</span>
+          </div>
+          <canvas id="sparkGOV" height="70" aria-label="U.S. Gov incidents"></canvas>
+          <p class="text-[11px] text-slate-400 mt-1">Stability ↑ • Risk ↓</p>
+        </div>
+  
+        <!-- Worksiox -->
+        <div class="card p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="h-5" viewBox="0 0 140 24" xmlns="http://www.w3.org/2000/svg" aria-label="Worksiox">
+              <text x="0" y="18" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="#22D3EE">WORKSIOX</text>
+            </svg>
+            <span class="text-[11px] font-semibold" style="color:#22D3EE">Worksiox</span>
+          </div>
+          <canvas id="sparkWORKSIOX" height="70" aria-label="Worksiox incidents"></canvas>
+          <p class="text-[11px] text-slate-400 mt-1">Latency ↓15% • Cost ↓$200k/yr</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <section id="approach" class="mt-8 py-16 reveal">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">My Approach as a TAM</h2>
+        <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-400">I believe a great TAM wears three hats: The Architect, The Co-Pilot, and The Guardian.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+        <div class="card p-6 text-center flex flex-col items-center">
+          <i data-lucide="drafting-compass" class="w-12 h-12 text-cyan-400 mb-4"></i>
+          <h3 class="font-semibold text-slate-100 mb-2 text-lg">The Architect</h3>
+          <p class="text-slate-400 flex-grow">I design future-proof solutions for complex workloads like AI and HPC, ensuring clients are building for what's next, not just what's now.</p>
+        </div>
+        <div class="card p-6 text-center flex flex-col items-center">
+          <i data-lucide="plane-takeoff" class="w-12 h-12 text-cyan-400 mb-4"></i>
+          <h3 class="font-semibold text-slate-100 mb-2 text-lg">The Co-Pilot</h3>
+          <p class="text-slate-400 flex-grow">I work hand-in-hand with sales and account teams, providing the deep technical credibility for SOWs and the strategic vision needed to win complex deals—and then keep them healthy.</p>
+        </div>
+        <div class="card p-6 text-center flex flex-col items-center">
+          <i data-lucide="shield-half" class="w-12 h-12 text-cyan-400 mb-4"></i>
+          <h3 class="font-semibold text-slate-100 mb-2 text-lg">The Guardian</h3>
+          <p class="text-slate-400 flex-grow">I own the stability of my clients' live environments. I proactively hunt for problems before they start and am the trusted point of contact when they need help.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="sales-experience" class="card p-6 sm:p-8 mt-8 reveal">
+      <h2 class="text-2xl font-bold text-slate-100 mb-4 text-center">Business & Sales Acumen</h2>
+      <div class="text-center max-w-2xl mx-auto">
+        <p class="text-slate-400">While my focus is technical, I have a strong foundation in business and full-cycle sales experience, which helps me align technical solutions with financial outcomes.</p>
+        <ul class="mt-4 text-left list-disc list-inside text-slate-400 space-y-1">
+          <li>Proven ability to architect and support multi-million dollar deals for enterprise and government clients.</li>
+          <li>Skilled in creating high-impact one-pagers and technical briefs that translate complex solutions into clear business value for C-level executives.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  
+  <footer class="text-center py-8 border-t border-slate-800">
+    <p class="text-slate-500 text-sm">&copy; 2025 Faraday Jami. All Rights Reserved.</p>
+  </footer>
+
+  <a href="#hero" id="toTop" class="to-top"><i data-lucide="arrow-up"></i><span class="hidden sm:inline">Top</span></a>
+
+  <div id="fj-cmdp" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/60" id="fj-cmdp-backdrop" aria-hidden="true"></div>
+    <div class="relative max-w-xl mx-auto mt-24">
+      <div class="card overflow-hidden">
+        <div class="flex items-center gap-2 px-4 pt-3">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+          <input id="fj-cmdp-input" type="text" autocomplete="off" placeholder="Type a command…"
+                 class="w-full bg-transparent outline-none text-slate-200 placeholder-slate-500 py-3 text-[15px]">
+          <kbd class="text-[10px] text-slate-400 border border-slate-600/70 rounded px-1.5 py-0.5">esc</kbd>
+        </div>
+        <div class="divider"></div>
+        <ul id="fj-cmdp-list" class="max-h-72 overflow-auto py-1">
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Icons
+    lucide.createIcons();
+
+    // Mobile Menu
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIconOpen = document.getElementById('menu-icon-open');
+    const menuIconClose = document.getElementById('menu-icon-close');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+    mobileMenuButton?.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      menuIconOpen.classList.toggle('hidden');
+      menuIconClose.classList.toggle('hidden');
+    });
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        menuIconOpen.classList.remove('hidden');
+        menuIconClose.classList.add('hidden');
+      });
+    });
+
+    // Theme Switcher
+    const themeBtns = document.querySelectorAll('.theme-btn');
+    function setTheme(kind){
+      document.body.classList.remove('theme-cloud','theme-net');
+      themeBtns.forEach(b=>b.classList.remove('active'));
+      if(kind==='cloud'){ document.body.classList.add('theme-cloud') }
+      if(kind==='net'){ document.body.classList.add('theme-net') }
+      document.querySelector(`.theme-btn[data-theme="${kind}"]`)?.classList.add('active');
+      localStorage.setItem('fj-theme', kind);
+    }
+    themeBtns.forEach(btn => btn.addEventListener('click', () => setTheme(btn.dataset.theme)));
+    setTheme(localStorage.getItem('fj-theme') || 'hpc');
+
+    // Scroll Progress + Back to top
+    const progress = document.getElementById('scroll-progress');
+    function onScroll(){
+      const h = document.documentElement;
+      const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+      progress.style.width = scrolled + '%';
+      document.getElementById('toTop').classList.toggle('show', h.scrollTop > 400);
+    }
+    document.addEventListener('scroll', onScroll, { passive:true }); onScroll();
+
+    // Spotlight Cursor
+    const spotlight = document.getElementById('spotlight');
+    document.addEventListener('pointermove', (e)=>{
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      spotlight.style.setProperty('--mx', x + '%');
+      spotlight.style.setProperty('--my', y + '%');
+    }, { passive:true });
+
+    // Reveal on Scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach((e)=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target) }});
+    }, { threshold: .12 });
+    reveals.forEach(el=>io.observe(el));
+
+    // Scroll-Spy for nav + chip bar
+    const sections = ['about','experience','case-studies','expertise','kpis','approach','sales-experience'];
+    const navLinks = [...document.querySelectorAll('.nav-link')];
+    const chipLinks = [...document.querySelectorAll('.quick-nav a')];
+    const spy = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          const id = entry.target.id;
+          navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+id));
+          chipLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+id));
+        }
+      })
+    }, { rootMargin:'-45% 0px -50% 0px', threshold:0 });
+    sections.forEach(id => { const el = document.getElementById(id); if(el) spy.observe(el) });
+
+    // Charts palette
+    const palette = {
+      hpc:'rgba(34,211,238,0.9)', hpcLite:'rgba(34,211,238,0.25)',
+      cloud:'rgba(139,92,246,0.9)', cloudLite:'rgba(139,92,246,0.25)',
+      net:'rgba(244,114,182,0.9)', netLite:'rgba(244,114,182,0.25)',
+      grid:'#233148', stroke:'#0b1327', text:'#cbd5e1'
+    };
+
+    // Charts
+    const hpcCtx = document.getElementById('hpcMixChart');
+    if (hpcCtx) {
+      new Chart(hpcCtx, {
+        type:'doughnut',
+        data:{ labels:['Compute','Network','Storage'],
+          datasets:[{ data:[55,20,25], backgroundColor:[palette.hpc,palette.cloud,palette.net], borderColor:palette.stroke, borderWidth:2 }]
+        },
+        options:{ plugins:{ legend:{ labels:{ color:palette.text } } }, cutout:'62%' }
+      });
+    }
+
+    const cloudCtx = document.getElementById('cloudBlendChart');
+    if (cloudCtx) {
+      new Chart(cloudCtx, {
+        type:'bar',
+        data:{
+          labels:['AI Inference','Data Warehouse','VDI','Apps'],
+          datasets:[
+            { label:'On-Prem', data:[40,35,50,45], backgroundColor:palette.hpcLite, borderColor:palette.hpc, borderWidth:1.5 },
+            { label:'APEX',    data:[35,30,20,25], backgroundColor:palette.cloudLite, borderColor:palette.cloud, borderWidth:1.5 },
+            { label:'Public',  data:[25,35,30,30], backgroundColor:palette.netLite, borderColor:palette.net, borderWidth:1.5 },
+          ]
+        },
+        options:{
+          responsive:true,
+          scales:{
+            x:{ grid:{ color:palette.grid }, ticks:{ color:palette.text } },
+            y:{ grid:{ color:palette.grid }, ticks:{ color:palette.text }, suggestedMax:100 }
+          },
+          plugins:{ legend:{ labels:{ color:palette.text } } }
+        }
+      });
+    }
+
+    const osiCtx = document.getElementById('osiChart');
+    if (osiCtx) {
+      new Chart(osiCtx, {
+        type:'bar',
+        data:{
+          labels:['L7','L4','L3','L2','L1'],
+          datasets:[{ label:'Operational Focus', data:[40,20,25,10,5], backgroundColor:palette.netLite, borderColor:palette.net, borderWidth:1.5 }]
+        },
+        options:{
+          indexAxis:'y',
+          scales:{
+            x:{ grid:{ color:palette.grid }, ticks:{ color:palette.text }, suggestedMax:60 },
+            y:{ grid:{ color:palette.grid }, ticks:{ color:palette.text } }
+          },
+          plugins:{ legend:{ labels:{ color:palette.text } } }
+        }
+      });
+    }
+
+    // Main KPI spark (kept from your original)
+  (function(){
+    const el = document.getElementById('kpiSpark');
+    if(!el || typeof Chart === 'undefined') return;
+    new Chart(el, {
+      type:'line',
+      data:{
+        labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        datasets:[{
+          data:[12,11,10,9,9,8,7,7,6,5,4,3],
+          tension:.35, fill:true,
+          borderColor:'rgba(56,189,248,0.9)', backgroundColor:'rgba(56,189,248,0.18)',
+          pointRadius:0, borderWidth:2
+        }]
+      },
+      options:{ plugins:{ legend:{ display:false } }, scales:{ x:{ display:false }, y:{ display:false, suggestedMin:0, suggestedMax:14 } } }
+    });
+  })();
+
+  // Brand mini-sparks (“hills”) aligned with colored logos
+  (function(){
+    if(typeof Chart === 'undefined') return;
+
+    const brands = [
+      { id:'sparkATT',      line:'rgba(0,168,224,0.95)', fill:'rgba(0,168,224,0.18)', data:[16,15,14,13,12,11,10,9,8,8,7,6] },
+      { id:'sparkCOGENT',   line:'rgba(255,106,19,0.95)', fill:'rgba(255,106,19,0.18)', data:[12,12,11,11,10,9,8,8,7,6,5,4] },
+      { id:'sparkGOV',      line:'rgba(226,232,240,0.95)', fill:'rgba(226,232,240,0.18)', data:[9,9,9,8,8,8,7,7,7,6,6,6] },
+      { id:'sparkWORKSIOX', line:'rgba(34,211,238,0.95)', fill:'rgba(34,211,238,0.18)', data:[10,9,9,8,7,7,6,6,5,4,4,3] },
+    ];
+
+    brands.forEach(b=>{
+      const el = document.getElementById(b.id);
+      if(!el) return;
+      new Chart(el, {
+        type:'line',
+        data:{
+          labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+          datasets:[{
+            data:b.data, tension:.35, fill:true, pointRadius:0, borderWidth:2,
+            borderColor:b.line, backgroundColor:b.fill
+          }]
+        },
+        options:{
+          plugins:{ legend:{ display:false }, tooltip:{ enabled:false } },
+          scales:{ x:{ display:false }, y:{ display:false } },
+          elements:{ line:{ borderCapStyle:'round' } }
+        }
+      });
+    });
+  })();
+
+    // --- ONE-PAGER EXPORT FUNCTION ---
+    function printOnePager() {
+      const role = (document.querySelector('#hero h1')?.textContent || 'Consultant, Technical Account Manager').trim();
+      const about = (document.querySelector('#about p')?.textContent || '').trim();
+
+      const html = `<!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <title>Faraday Jami — One-Pager</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              :root{
+                --bg:#0b1224; --ink:#0f172a; --text:#0b1224; --paper:#ffffff;
+                --title:#0b1224; --sub:#334155; --accent:#22d3ee; --muted:#64748b;
+                --grid:#e2e8f0;
+              }
+              @media (prefers-color-scheme: dark){
+                :root{ --paper:#0f172a; --title:#e2e8f0; --sub:#94a3b8; --text:#e2e8f0; --grid:#1f2937 }
+              }
+              *{ box-sizing:border-box }
+              html,body{ margin:0; }
+              body{
+                background:var(--bg);
+                padding:24px;
+                font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+                color:var(--text);
+              }
+              .sheet{
+                background:var(--paper);
+                width:210mm; min-height:297mm; margin:0 auto; padding:28mm 22mm;
+                box-shadow:0 10px 40px rgba(0,0,0,.25);
+                position:relative;
+              }
+              .grid{
+                position:absolute; inset:0; pointer-events:none;
+                background-image:linear-gradient(to right, var(--grid) 1px, transparent 1px),
+                                 linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+                background-size:22px 22px; opacity:.06;
+              }
+              h1{ margin:0; font-size:28px; color:var(--title); line-height:1.2 }
+              h2{ font-size:14px; text-transform:uppercase; letter-spacing:.12em; color:var(--sub); margin:26px 0 10px }
+              p, li{ font-size:12px; line-height:1.6; color:var(--title) }
+              .row{ display:flex; gap:28px; margin-top:16px }
+              .col{ flex:1 }
+              .pill{ display:inline-block; font-size:10px; padding:4px 8px; border-radius:999px; border:1px solid #cbd5e1; color:#0f172a; margin-right:6px }
+              .accent{ color:var(--accent) }
+              .hr{ height:1px; background:#cbd5e147; margin:18px 0 }
+              ul{ padding-left:16px; margin:8px 0 }
+              .tiny{ font-size:10px; color:#64748b }
+              @media print{
+                body{ padding:0; background:#fff }
+                .sheet{ box-shadow:none; width:auto; min-height:auto; padding:18mm 16mm }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="sheet">
+              <div class="grid"></div>
+              <header>
+                <h1>Faraday Jami <span class="accent">/ ${role}</span></h1>
+                <p class="tiny">GitHub: github.com/faradeen-ja  •  Email: faradeen@outlook.com</p>
+              </header>
+
+              <div class="hr"></div>
+
+              <section>
+                <h2>Summary</h2>
+                <p>${about || 'Technical account manager and consultant focused on HPC/AI, hybrid cloud, and internet-scale networking. Bridges architecture with business outcomes and operational KPIs.'}</p>
+              </section>
+
+              <div class="row">
+                <section class="col">
+                  <h2>Blueprints</h2>
+                  <p>
+                    <span class="pill">HPC &amp; AI</span>
+                    <span class="pill">Hybrid Cloud</span>
+                    <span class="pill">Networking (OSI)</span>
+                  </p>
+                  <ul>
+                    <li><strong>HPC &amp; AI:</strong> PowerEdge, NVIDIA H100, high-throughput fabrics, parallel storage.</li>
+                    <li><strong>Hybrid Cloud:</strong> On-prem + APEX + Public cloud placement; policy, DR, FinOps guardrails.</li>
+                    <li><strong>Networking:</strong> L7 observability, L3/BGP design, L2 resiliency, L1 optical paths.</li>
+                  </ul>
+                </section>
+                <section class="col">
+                  <h2>Operational KPIs</h2>
+                  <ul>
+                    <li>MTTR • Change success rate • Upgrade compliance</li>
+                    <li>CloudIQ coverage • APEX utilization • Incident trend</li>
+                  </ul>
+
+                  <h2>Tooling</h2>
+                  <p class="tiny">CloudIQ • OpenManage • Secure Connect Gateway • ProSupport • APEX Navigator • VxRail</p>
+                </section>
+              </div>
+
+              <section>
+                <h2>Experience (Highlights)</h2>
+                <ul>
+                  <li>Technical Account Manager — Global 2000 internet & hybrid cloud support (2025–Present).</li>
+                  <li>Lead Strategic Consultant — API automation for Dell servers; full-stack deployments (2021–Present).</li>
+                  <li>AT&amp;T — Enterprise networking (SD-WAN, 5G), FirstNet projects (2015–2025).</li>
+                  <li>Gov Contractor — Rugged Dell deployments, secure telecom/HPC SOWs (2010–2014).</li>
+                </ul>
+              </section>
+            </div>
+            <script>window.onafterprint = ()=> window.close(); window.print();${'</' + 'script>'}
+          </body>
+          </html>`;
+
+      const w = window.open('', '_blank', 'noopener,noreferrer,width=1024,height=768');
+      if (!w) { alert('Please allow pop-ups to generate the one-pager.'); return; }
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+    }
+
+
+    // ===================== COMMAND PALETTE (JS) =====================
+    (function(){
+      const modal = document.getElementById('fj-cmdp');
+      const backdrop = document.getElementById('fj-cmdp-backdrop');
+      const input = document.getElementById('fj-cmdp-input');
+      const list = document.getElementById('fj-cmdp-list');
+
+      const actions = [
+        // Navigation
+        { id:'go-hero', label:'Go to: Hero', icon:'home', hint:'enter', run:()=>location.hash='#hero' },
+        { id:'go-about', label:'Go to: About', icon:'user-round', hint:'enter', run:()=>location.hash='#about' },
+        { id:'go-experience', label:'Go to: Experience', icon:'briefcase', hint:'enter', run:()=>location.hash='#experience' },
+        { id:'go-case', label:'Go to: Case Study', icon:'file-chart-column', hint:'enter', run:()=>location.hash='#case-studies' },
+        { id:'go-expertise', label:'Go to: Technical Blueprints', icon:'circuit-board', hint:'enter', run:()=>location.hash='#expertise' },
+        { id:'go-kpis', label:'Go to: KPIs', icon:'activity', hint:'enter', run:()=>location.hash='#kpis' },
+        { id:'go-approach', label:'Go to: My Approach', icon:'compass', hint:'enter', run:()=>location.hash='#approach' },
+        { id:'go-sales', label:'Go to: Business & Sales', icon:'handshake', hint:'enter', run:()=>location.hash='#sales-experience' },
+
+        // Theme
+        { id:'theme-hpc', label:'Theme: HPC (Cyan)', icon:'sparkles', hint:'enter', run:()=>setTheme('hpc') },
+        { id:'theme-cloud', label:'Theme: Cloud (Indigo)', icon:'cloud', hint:'enter', run:()=>setTheme('cloud') },
+        { id:'theme-net', label:'Theme: Network (Fuchsia)', icon:'satellite', hint:'enter', run:()=>setTheme('net') },
+
+        // Utilities
+        { id:'open-github', label:'Open GitHub', icon:'github', hint:'↗', run:()=>window.open('https://github.com/faradeen-ja','_blank') },
+        { id:'email', label:'Email Faraday', icon:'mail', hint:'↗', run:()=>location.href='mailto:faradeen@outlook.com' },
+        { id:'print-onepager', label:'Export: Print-ready One-Pager (PDF)', icon:'printer', hint:'enter', run:printOnePager }
+      ];
+
+      function render(items){
+        list.innerHTML = '';
+        items.forEach((a,i)=>{
+          const li = document.createElement('li');
+          li.setAttribute('role','option');
+          li.setAttribute('aria-selected', i===0 ? 'true' : 'false');
+          li.dataset.id = a.id;
+          li.innerHTML = `
+            <i data-lucide="${a.icon}" class="w-4 h-4 text-slate-400"></i>
+            <span>${a.label}</span>
+            <span class="k">${a.hint}</span>
+          `;
+          li.addEventListener('click', ()=> { a.run(); close(); });
+          list.appendChild(li);
+        });
+        window.lucide && window.lucide.createIcons();
+      }
+
+      function open(){
+        modal.classList.remove('hidden');
+        render(actions);
+        input.value = '';
+        setTimeout(()=>input.focus(), 0);
+      }
+      function close(){
+        modal.classList.add('hidden');
+        input.blur();
+      }
+
+      // Filter
+      input.addEventListener('input', ()=>{
+        const q = input.value.trim().toLowerCase();
+        const filtered = !q ? actions : actions.filter(a => a.label.toLowerCase().includes(q) || a.id.includes(q));
+        render(filtered.length ? filtered : [{ id:'none', label:'No results', icon:'circle-off', hint:'', run:()=>{} }]);
+      });
+
+      // Keyboard navigation
+      function move(sel){
+        const items = [...list.querySelectorAll('li[role="option"]')];
+        const i = items.findIndex(el => el.getAttribute('aria-selected')==='true');
+        const ni = (i + sel + items.length) % items.length;
+        items.forEach((el,idx)=> el.setAttribute('aria-selected', idx===ni ? 'true' : 'false'));
+        items[ni].scrollIntoView({ block:'nearest' });
+      }
+      function runSelected(){
+        const selected = list.querySelector('li[aria-selected="true"]');
+        if(!selected) return;
+        const act = actions.find(a=>a.id===selected.dataset.id);
+        if(act && act.run){ act.run(); close(); }
+      }
+
+      // Global hotkeys: ⌘/Ctrl+K to open
+      document.addEventListener('keydown', (e)=>{
+        const metaK = (e.key.toLowerCase()==='k' && (e.metaKey || e.ctrlKey));
+        if(metaK){
+          e.preventDefault();
+          if(modal.classList.contains('hidden')) open(); else close();
+        }
+        if(modal.classList.contains('hidden')) return;
+        if(e.key==='Escape'){ close() }
+        if(e.key==='ArrowDown'){ e.preventDefault(); move(1) }
+        if(e.key==='ArrowUp'){ e.preventDefault(); move(-1) }
+        if(e.key==='Enter'){ e.preventDefault(); runSelected() }
+      });
+
+      document.getElementById('fj-cmdp-backdrop').addEventListener('click', close);
+
+      // Expose setTheme for palette use (already defined above)
+      window.setTheme = window.setTheme || function(kind){
+        document.body.classList.remove('theme-cloud','theme-net');
+        if(kind==='cloud'){ document.body.classList.add('theme-cloud') }
+        if(kind==='net'){ document.body.classList.add('theme-net') }
+        localStorage.setItem('fj-theme', kind);
+      };
+    })();
+  </script>
+</body>
+</html>
