@@ -400,6 +400,84 @@
         </div>
       </div>
     </section>
+    
+    <!-- KPIs -->
+<section id="kpis" class="mt-8 card p-6 sm:p-8 reveal">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4 text-center">Operational KPIs I Track</h2>
+    <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2">
+        <p class="text-slate-300 text-[15px] leading-7 text-center lg:text-left">
+          <strong>MTTR</strong> • <strong>Change success rate</strong> • <strong>Upgrade compliance</strong> •
+          <strong>CloudIQ coverage</strong> • <strong>APEX utilization</strong> • <strong>Incident volume trend</strong>
+        </p>
+        <div class="mt-4 text-sm text-slate-400">
+          <span class="font-semibold text-slate-300">Governance & Escalation:</span>
+          RACI mapping • change windows • sev-based SLAs • exec comms templates • problem-management postmortems.
+        </div>
+      </div>
+  
+      <!-- Main sparkline -->
+      <div class="card p-4 frame-cloud">
+        <h3 class="font-semibold mb-2">Incident Volume (Illustrative)</h3>
+        <canvas id="kpiSpark" height="120" aria-label="Incident volume trend"></canvas>
+        <p class="text-xs text-slate-400 mt-2">Downward trend reflects proactive TAM operations.</p>
+      </div>
+    </div>
+  
+    <!-- Results by Provider (logos with colored text + aligned hills) -->
+    <div class="max-w-5xl mx-auto mt-6">
+      <h3 class="text-sm font-semibold text-slate-300 mb-3">Results by Provider</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- AT&T -->
+        <div class="card p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="h-5" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" aria-label="AT&T">
+              <text x="0" y="30" font-family="Inter, sans-serif" font-size="35" font-weight="800" fill="#00A8E0">AT&amp;T</text>
+            </svg>
+            <span class="text-[11px] font-semibold" style="color:#00A8E0">AT&amp;T</span>
+          </div>
+          <canvas id="sparkATT" height="70" aria-label="AT&amp;T incidents"></canvas>
+          <p class="text-[11px] text-slate-400 mt-1">MTTR ↓18% • Incidents ↓35%</p>
+        </div>
+  
+        <!-- Cogent -->
+        <div class="card p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="h-5" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" aria-label="Cogent">
+              <text x="0" y="30" font-family="Inter, sans-serif" font-size="30" font-weight="800" fill="#FF6A13">COGENT</text>
+            </svg>
+            <span class="text-[11px] font-semibold" style="color:#FF6A13">Cogent</span>
+          </div>
+          <canvas id="sparkCOGENT" height="70" aria-label="Cogent incidents"></canvas>
+          <p class="text-[11px] text-slate-400 mt-1">MTTR ↓22% • Incidents ↓40%</p>
+        </div>
+  
+        <!-- U.S. Gov -->
+        <div class="card p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="h-5" viewBox="0 0 120 24" xmlns="http://www.w3.org/2000/svg" aria-label="U.S. Gov">
+              <text x="0" y="18" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="#E2E8F0">U.S. GOV</text>
+            </svg>
+            <span class="text-[11px] font-semibold" style="color:#E2E8F0">U.S. Gov</span>
+          </div>
+          <canvas id="sparkGOV" height="70" aria-label="U.S. Gov incidents"></canvas>
+          <p class="text-[11px] text-slate-400 mt-1">Stability ↑ • Risk ↓</p>
+        </div>
+  
+        <!-- Worksiox -->
+        <div class="card p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="h-5" viewBox="0 0 140 24" xmlns="http://www.w3.org/2000/svg" aria-label="Worksiox">
+              <text x="0" y="18" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="#22D3EE">WORKSIOX</text>
+            </svg>
+            <span class="text-[11px] font-semibold" style="color:#22D3EE">Worksiox</span>
+          </div>
+          <canvas id="sparkWORKSIOX" height="70" aria-label="Worksiox incidents"></canvas>
+          <p class="text-[11px] text-slate-400 mt-1">Latency ↓15% • Cost ↓$200k/yr</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
     <section id="expertise" class="mt-8 card p-6 sm:p-8 reveal">
       <h2 class="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl text-center mb-12">Technical Blueprints</h2>
@@ -558,83 +636,7 @@
       </div>
     </section>
 
-<!-- KPIs -->
-<section id="kpis" class="mt-8 card p-6 sm:p-8 reveal">
-    <h2 class="text-2xl font-bold text-slate-100 mb-4 text-center">Operational KPIs I Track</h2>
-    <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-2">
-        <p class="text-slate-300 text-[15px] leading-7 text-center lg:text-left">
-          <strong>MTTR</strong> • <strong>Change success rate</strong> • <strong>Upgrade compliance</strong> •
-          <strong>CloudIQ coverage</strong> • <strong>APEX utilization</strong> • <strong>Incident volume trend</strong>
-        </p>
-        <div class="mt-4 text-sm text-slate-400">
-          <span class="font-semibold text-slate-300">Governance & Escalation:</span>
-          RACI mapping • change windows • sev-based SLAs • exec comms templates • problem-management postmortems.
-        </div>
-      </div>
-  
-      <!-- Main sparkline -->
-      <div class="card p-4 frame-cloud">
-        <h3 class="font-semibold mb-2">Incident Volume (Illustrative)</h3>
-        <canvas id="kpiSpark" height="120" aria-label="Incident volume trend"></canvas>
-        <p class="text-xs text-slate-400 mt-2">Downward trend reflects proactive TAM operations.</p>
-      </div>
-    </div>
-  
-    <!-- Results by Provider (logos with colored text + aligned hills) -->
-    <div class="max-w-5xl mx-auto mt-6">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Results by Provider</h3>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <!-- AT&T -->
-        <div class="card p-3">
-          <div class="flex items-center gap-2 mb-2">
-            <svg class="h-5" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" aria-label="AT&T">
-              <text x="0" y="30" font-family="Inter, sans-serif" font-size="35" font-weight="800" fill="#00A8E0">AT&amp;T</text>
-            </svg>
-            <span class="text-[11px] font-semibold" style="color:#00A8E0">AT&amp;T</span>
-          </div>
-          <canvas id="sparkATT" height="70" aria-label="AT&amp;T incidents"></canvas>
-          <p class="text-[11px] text-slate-400 mt-1">MTTR ↓18% • Incidents ↓35%</p>
-        </div>
-  
-        <!-- Cogent -->
-        <div class="card p-3">
-          <div class="flex items-center gap-2 mb-2">
-            <svg class="h-5" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" aria-label="Cogent">
-              <text x="0" y="30" font-family="Inter, sans-serif" font-size="30" font-weight="800" fill="#FF6A13">COGENT</text>
-            </svg>
-            <span class="text-[11px] font-semibold" style="color:#FF6A13">Cogent</span>
-          </div>
-          <canvas id="sparkCOGENT" height="70" aria-label="Cogent incidents"></canvas>
-          <p class="text-[11px] text-slate-400 mt-1">MTTR ↓22% • Incidents ↓40%</p>
-        </div>
-  
-        <!-- U.S. Gov -->
-        <div class="card p-3">
-          <div class="flex items-center gap-2 mb-2">
-            <svg class="h-5" viewBox="0 0 120 24" xmlns="http://www.w3.org/2000/svg" aria-label="U.S. Gov">
-              <text x="0" y="18" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="#E2E8F0">U.S. GOV</text>
-            </svg>
-            <span class="text-[11px] font-semibold" style="color:#E2E8F0">U.S. Gov</span>
-          </div>
-          <canvas id="sparkGOV" height="70" aria-label="U.S. Gov incidents"></canvas>
-          <p class="text-[11px] text-slate-400 mt-1">Stability ↑ • Risk ↓</p>
-        </div>
-  
-        <!-- Worksiox -->
-        <div class="card p-3">
-          <div class="flex items-center gap-2 mb-2">
-            <svg class="h-5" viewBox="0 0 140 24" xmlns="http://www.w3.org/2000/svg" aria-label="Worksiox">
-              <text x="0" y="18" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="#22D3EE">WORKSIOX</text>
-            </svg>
-            <span class="text-[11px] font-semibold" style="color:#22D3EE">Worksiox</span>
-          </div>
-          <canvas id="sparkWORKSIOX" height="70" aria-label="Worksiox incidents"></canvas>
-          <p class="text-[11px] text-slate-400 mt-1">Latency ↓15% • Cost ↓$200k/yr</p>
-        </div>
-      </div>
-    </div>
-  </section>
+
 
     <section id="approach" class="mt-8 py-16 reveal">
       <div class="text-center mb-12">
