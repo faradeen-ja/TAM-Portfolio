@@ -916,123 +916,67 @@
       });
     })();
 
-    // --- ONE-PAGER EXPORT FUNCTION ---
-    function printOnePager() {
-      const role = (document.querySelector('#hero h1')?.textContent || 'Technical Account Manager / Consultant').trim();
-      const about = (document.querySelector('#about p')?.textContent || '').trim();
+// --- ONE-PAGER EXPORT FUNCTION (Direct Download) ---
+function printOnePager() {
+  const role = (document.querySelector('#hero h1')?.textContent || 'Technical Account Manager / Consultant').trim();
+  const about = (document.querySelector('#about p')?.textContent || '').trim();
 
-      const html = `<!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <title>Faraday Jami — One-Pager</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-              :root{
-                --bg:#0b1224; --ink:#0f172a; --text:#0b1224; --paper:#ffffff;
-                --title:#0b1224; --sub:#334155; --accent:#22d3ee; --muted:#64748b;
-                --grid:#e2e8f0;
-              }
-              @media (prefers-color-scheme: dark){
-                :root{ --paper:#0f172a; --title:#e2e8f0; --sub:#94a3b8; --text:#e2e8f0; --grid:#1f2937 }
-              }
-              *{ box-sizing:border-box }
-              html,body{ margin:0; }
-              body{
-                background:var(--bg);
-                padding:24px;
-                font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-                color:var(--text);
-              }
-              .sheet{
-                background:var(--paper);
-                width:210mm; min-height:297mm; margin:0 auto; padding:28mm 22mm;
-                box-shadow:0 10px 40px rgba(0,0,0,.25);
-                position:relative;
-              }
-              .grid{
-                position:absolute; inset:0; pointer-events:none;
-                background-image:linear-gradient(to right, var(--grid) 1px, transparent 1px),
-                                 linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
-                background-size:22px 22px; opacity:.06;
-              }
-              h1{ margin:0; font-size:28px; color:var(--title); line-height:1.2 }
-              h2{ font-size:14px; text-transform:uppercase; letter-spacing:.12em; color:var(--sub); margin:26px 0 10px }
-              p, li{ font-size:12px; line-height:1.6; color:var(--title) }
-              .row{ display:flex; gap:28px; margin-top:16px }
-              .col{ flex:1 }
-              .pill{ display:inline-block; font-size:10px; padding:4px 8px; border-radius:999px; border:1px solid #cbd5e1; color:#0f172a; margin-right:6px }
-              .accent{ color:var(--accent) }
-              .hr{ height:1px; background:#cbd5e147; margin:18px 0 }
-              ul{ padding-left:16px; margin:8px 0 }
-              .tiny{ font-size:10px; color:#64748b }
-              @media print{
-                body{ padding:0; background:#fff }
-                .sheet{ box-shadow:none; width:auto; min-height:auto; padding:18mm 16mm }
-              }
-            </style>
-          </head>
-          <body>
-            <div class="sheet">
-              <div class="grid"></div>
-              <header>
-                <h1>Faraday Jami <span class="accent">/ ${role}</span></h1>
-                <p class="tiny">GitHub: github.com/faradeen-ja  •  Email: faradeen@outlook.com</p>
-              </header>
+  const html = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <title>Faraday Jami — One-Pager</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Inter, system-ui, sans-serif; margin: 2rem; line-height: 1.6; }
+        h1 { font-size: 24px; margin: 0 0 0.5rem; }
+        h2 { font-size: 14px; text-transform: uppercase; margin: 1.5rem 0 0.5rem; }
+        p, li { font-size: 12px; }
+        ul { margin: 0; padding-left: 1.2rem; }
+      </style>
+    </head>
+    <body>
+      <h1>Faraday Jami / ${role}</h1>
+      <p><small>GitHub: github.com/faradeen-ja • Email: faradeen@outlook.com</small></p>
 
-              <div class="hr"></div>
+      <h2>Summary</h2>
+      <p>${about || 'Technical account manager and consultant focused on HPC/AI, hybrid cloud, networking, security, and DevOps.'}</p>
 
-              <section>
-                <h2>Summary</h2>
-                <p>${about || 'Technical account manager and consultant focused on HPC/AI, hybrid cloud, networking, security, and DevOps. Bridges architecture with business outcomes and operational KPIs.'}</p>
-              </section>
+      <h2>Blueprints</h2>
+      <ul>
+        <li><strong>HPC & AI:</strong> Enterprise servers, accelerators, fabrics, storage</li>
+        <li><strong>Hybrid Cloud:</strong> On-prem + public cloud, DR, FinOps guardrails</li>
+        <li><strong>Networking:</strong> L7 observability, BGP design, resiliency</li>
+      </ul>
 
-              <div class="row">
-                <section class="col">
-                  <h2>Blueprints</h2>
-                  <p>
-                    <span class="pill">HPC &amp; AI</span>
-                    <span class="pill">Hybrid Cloud</span>
-                    <span class="pill">Networking (OSI)</span>
-                    <span class="pill">Security</span>
-                    <span class="pill">DevOps</span>
-                  </p>
-                  <ul>
-                    <li><strong>HPC &amp; AI:</strong> Enterprise servers, accelerators, high-throughput fabrics, parallel storage.</li>
-                    <li><strong>Hybrid Cloud:</strong> On-prem + brokered platform + public cloud; policy, DR, FinOps guardrails.</li>
-                    <li><strong>Networking:</strong> L7 observability, L3/BGP design, L2 resiliency, optical paths.</li>
-                  </ul>
-                </section>
-                <section class="col">
-                  <h2>Operational KPIs</h2>
-                  <ul>
-                    <li>MTTR • Change success rate • Upgrade compliance</li>
-                    <li>Coverage &amp; telemetry • Utilization • Incident trend</li>
-                  </ul>
+      <h2>Operational KPIs</h2>
+      <ul>
+        <li>MTTR • Change success rate • Upgrade compliance</li>
+        <li>Coverage & telemetry • Utilization • Incident trend</li>
+      </ul>
 
-                  <h2>Tooling</h2>
-                  <p class="tiny">Kubernetes • Terraform • Ansible • REST/GraphQL • Observability</p>
-                </section>
-              </div>
+      <h2>Experience (Highlights)</h2>
+      <ul>
+        <li>Technical Account Manager — Global 2000 internet & hybrid cloud (2025–Present)</li>
+        <li>Lead Strategic Consultant — API automation & full-stack deployments (2021–Present)</li>
+        <li>AT&T — Enterprise networking (SD-WAN, 5G), exec engagement (2015–2025)</li>
+        <li>Gov Contractor — Secure field deployments, SOW governance (2010–2014)</li>
+      </ul>
+    </body>
+    </html>`;
 
-              <section>
-                <h2>Experience (Highlights)</h2>
-                <ul>
-                  <li>Technical Account Manager — Global 2000 internet &amp; hybrid cloud (2025–Present).</li>
-                  <li>Lead Strategic Consultant — API automation &amp; full-stack deployments (2021–Present).</li>
-                  <li>AT&amp;T — Enterprise networking (SD-WAN, 5G), exec engagement (2015–2025).</li>
-                  <li>Gov Contractor — Secure field deployments, SOW governance (2010–2014).</li>
-                </ul>
-              </section>
-            </div>
-            <script>window.onafterprint = ()=> window.close(); window.print();<\/script>
-          </body>
-          </html>`;
+  // Create a blob and download link
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Faraday_Jami_OnePager.html";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
-      const w = window.open('', '_blank', 'noopener,noreferrer,width=1024,height=768');
-      if (!w) { alert('Please allow pop-ups to generate the one-pager.'); return; }
-      w.document.open(); w.document.write(html); w.document.close();
-    }
 
     // ===================== COMMAND PALETTE (JS) =====================
     (function(){
