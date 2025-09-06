@@ -293,11 +293,7 @@
         <span class="chip">Consultant</span>
       </div>
 
-      <div class="mt-8 flex justify-center space-x-6">
-        <a href="https://github.com/faradeen-ja" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-cyan-400 transition-colors" aria-label="GitHub"><i data-lucide="github"></i></a>
-        <a href="mailto:faradeen@outlook.com" class="text-slate-400 hover:text-cyan-400 transition-colors" aria-label="Email"><i data-lucide="mail"></i></a>
-        <button onclick="printOnePager()" class="chip" aria-label="Download PDF Resume"><i data-lucide="printer"></i> Download PDF Resume</button>
-      </div>
+  
 
       <div class="mt-8 text-sm text-slate-500">
         Press 
@@ -749,88 +745,7 @@
       });
     });
 
-    // --- ONE-PAGER EXPORT FUNCTION (Styled Print) ---
-function printOnePager() {
-  const role = (document.querySelector('#hero h1')?.textContent || 'Technical Account Manager / Consultant').trim();
-  const about = (document.querySelector('#about p')?.textContent || '').trim();
 
-  const html = `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Faraday Jami — One-Pager</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
-    <style>
-      body { font-family: 'Inter', sans-serif; margin:0; padding:2rem; background:#fff; color:#111; }
-      header { border-bottom:2px solid #22d3ee; margin-bottom:1rem; padding-bottom:0.5rem; }
-      h1 { font-size: 28px; margin-bottom:0.25rem; }
-      h2 { font-size: 14px; margin:1.5rem 0 0.5rem; text-transform:uppercase; color:#555; }
-      p, li { font-size:13px; line-height:1.6; }
-      ul { margin:0; padding-left:1.2rem; }
-      .pill { display:inline-block; padding:4px 10px; font-size:11px; border-radius:999px; background:#f1f5f9; margin:2px; }
-      .grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Faraday Jami / ${role}</h1>
-      <p style="font-size:12px; color:#555">GitHub: github.com/faradeen-ja • Email: faradeen@outlook.com</p>
-    </header>
-
-    <section>
-      <h2>Summary</h2>
-      <p>${about || 'Hybrid executive and technical advisor across HPC, Networking, Cloud, Security, and DevOps.'}</p>
-    </section>
-
-    <section class="grid">
-      <div>
-        <h2>Blueprints</h2>
-        <p>
-          <span class="pill">HPC & AI</span>
-          <span class="pill">Hybrid Cloud</span>
-          <span class="pill">Networking</span>
-          <span class="pill">Security</span>
-          <span class="pill">DevOps</span>
-        </p>
-        <ul>
-          <li><strong>HPC & AI:</strong> Enterprise servers, accelerators, fabrics, storage</li>
-          <li><strong>Hybrid Cloud:</strong> On-prem + public cloud, DR, FinOps guardrails</li>
-          <li><strong>Networking:</strong> L7 observability, BGP design, resiliency</li>
-        </ul>
-      </div>
-      <div>
-        <h2>Operational KPIs</h2>
-        <ul>
-          <li>MTTR • Change success rate • Upgrade compliance</li>
-          <li>Coverage & telemetry • Utilization • Incident trend</li>
-        </ul>
-        <h2>Tooling</h2>
-        <p>Kubernetes • Terraform • Ansible • REST/GraphQL • Observability</p>
-      </div>
-    </section>
-
-    <section>
-      <h2>Experience (Highlights)</h2>
-      <ul>
-        <li>Technical Account Manager — Global 2000 internet & hybrid cloud (2025–Present)</li>
-        <li>Lead Strategic Consultant — API automation & full-stack deployments (2021–Present)</li>
-        <li>AT&amp;T — Enterprise networking (SD-WAN, 5G), exec engagement (2015–2025)</li>
-        <li>Gov Contractor — Secure field deployments, SOW governance (2010–2014)</li>
-      </ul>
-    </section>
-
-    <script>
-      window.onload = () => window.print();
-    </script>
-  </body>
-  </html>`;
-
-  const w = window.open('', '_blank');
-  w.document.open();
-  w.document.write(html);
-  w.document.close();
-}
 
 
     // Theme Switcher
